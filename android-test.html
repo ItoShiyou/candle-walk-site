@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Androidテスター募集 — ロウソク行脚</title>
 <meta name="description" content="パズルゲーム『ロウソク行脚』Android版のクローズドテスト参加者を募集しています。">
-<meta name="theme-color" content="#101719"><meta property="og:title" content="Androidテスター募集 — ロウソク行脚"><meta property="og:description" content="夜の洋館に灯りをともすパズルゲーム。Android版の公開前テストに参加しませんか。"><meta property="og:image" content="https://itoshiyou.github.io/candle-walk-site/assets/chapter-one.jpg"><link rel="icon" href="assets/app-icon.png"><link rel="stylesheet" href="style.css?v=20261020-direct-video-links"></head><body>
+<meta name="theme-color" content="#101719"><meta property="og:title" content="Androidテスター募集 — ロウソク行脚"><meta property="og:description" content="夜の洋館に灯りをともすパズルゲーム。Android版の公開前テストに参加しませんか。"><meta property="og:image" content="https://itoshiyou.github.io/candle-walk-site/assets/chapter-one.jpg"><link rel="icon" href="assets/app-icon.png"><link rel="stylesheet" href="style.css?v=20261020-youtube-embed"></head><body>
 <a class="skip" href="#main">本文へ</a><header class="site-header"><a class="brand" href="index.html"><span class="brand-flame" aria-hidden="true"></span>ロウソク行脚</a><nav aria-label="メインナビゲーション"><a href="index.html#how">遊び方</a><a href="android-test.html">Androidテスター募集</a><a href="support.html">サポート</a></nav></header>
 <main id="main" class="document">
 <p class="eyebrow">ANDROID CLOSED TEST</p>
@@ -26,13 +26,69 @@
 <ul><li>お使いのAndroid端末で、インストール・起動・ステージプレイができるか</li><li>画面表示や操作で困るところがないか</li><li>音、動き、文字の見やすさに問題がないか</li><li>どの場面が楽しかったか、どこで迷ったか</li></ul>
 <p>短い感想だけでも助かります。ゲームの進行状況は端末内に保存され、テスト記録が自動でこちらへ送信されることはありません。</p>
 <h2>ゲーム紹介動画</h2>
-<p>YouTube Shortsのカードを押すと、YouTubeで動画を再生できます。</p>
-<div class="video-grid">
-<a class="video-link" href="https://www.youtube.com/shorts/ulXi5uUPV-c" target="_blank" rel="noopener"><span class="video-play" aria-hidden="true">▶</span><span>YouTube Shorts 1</span><small>YouTubeで再生 ↗</small></a>
-<a class="video-link" href="https://www.youtube.com/shorts/iDjgA3Ocm6I" target="_blank" rel="noopener"><span class="video-play" aria-hidden="true">▶</span><span>YouTube Shorts 2</span><small>YouTubeで再生 ↗</small></a>
-<a class="video-link" href="https://www.youtube.com/shorts/h94-UZmF73o" target="_blank" rel="noopener"><span class="video-play" aria-hidden="true">▶</span><span>YouTube Shorts 3</span><small>YouTubeで再生 ↗</small></a>
-<a class="video-link" href="https://www.youtube.com/shorts/FITBDzMbf0I" target="_blank" rel="noopener"><span class="video-play" aria-hidden="true">▶</span><span>YouTube Shorts 4</span><small>YouTubeで再生 ↗</small></a>
-</div>
+<p>YouTube Shortsをページ内で再生できます。動画を読み込めない場合は、YouTubeで開くリンクに切り替わります。</p>
+<div id="youtube-videos" class="video-grid" aria-live="polite"></div>
+<noscript><p>YouTube埋め込みにはJavaScriptが必要です。<a href="https://www.youtube.com/shorts/ulXi5uUPV-c">動画1</a>・<a href="https://www.youtube.com/shorts/iDjgA3Ocm6I">動画2</a>・<a href="https://www.youtube.com/shorts/h94-UZmF73o">動画3</a>・<a href="https://www.youtube.com/shorts/FITBDzMbf0I">動画4</a>をYouTubeでご覧ください。</p></noscript>
+<script>
+(()=>{
+  const videos=[
+    {id:'ulXi5uUPV-c',label:'YouTube Shorts 1'},
+    {id:'iDjgA3Ocm6I',label:'YouTube Shorts 2'},
+    {id:'h94-UZmF73o',label:'YouTube Shorts 3'},
+    {id:'FITBDzMbf0I',label:'YouTube Shorts 4'}
+  ];
+  const grid=document.getElementById('youtube-videos');
+  const publishedUrl='https://itoshiyou.github.io/candle-walk-site/android-test.html';
+  function linkCard(video){
+    const link=document.createElement('a');
+    link.className='video-link';
+    link.href='https://www.youtube.com/shorts/'+video.id;
+    link.target='_blank';
+    link.rel='noopener';
+    link.innerHTML='<span class="video-play" aria-hidden="true">▶</span><span></span><small>YouTubeで再生 ↗</small>';
+    link.querySelector('span:nth-child(2)').textContent=video.label;
+    return link;
+  }
+  if(location.protocol==='file:'){
+    const note=document.createElement('p');
+    note.className='muted';
+    note.innerHTML='ローカルプレビュー（file://）ではYouTube埋め込み再生エラーが起きることがあるため、<a href="'+publishedUrl+'">HTTPS公開ページの埋め込みプレイヤー</a>をご覧ください。下のリンクから動画を直接開くこともできます。';
+    grid.before(note);
+    videos.forEach(video=>grid.append(linkCard(video)));
+    return;
+  }
+  const players=[];
+  const ready=new Set();
+  const showFallback=index=>{
+    const holder=document.getElementById('youtube-player-'+index);
+    if(holder) holder.replaceWith(linkCard(videos[index]));
+  };
+  videos.forEach((video,index)=>{
+    const holder=document.createElement('div');
+    holder.className='video-frame';
+    holder.id='youtube-player-'+index;
+    holder.setAttribute('aria-label',video.label+' 読み込み中');
+    grid.append(holder);
+  });
+  const fallbackTimer=window.setTimeout(()=>videos.forEach((_,index)=>{if(!ready.has(index))showFallback(index)}),12000);
+  window.onYouTubeIframeAPIReady=()=>{
+    videos.forEach((video,index)=>{
+      players[index]=new YT.Player('youtube-player-'+index,{
+        videoId:video.id,
+        playerVars:{origin:location.origin,playsinline:1,rel:0},
+        events:{
+          onReady:()=>{ready.add(index);if(ready.size===videos.length)clearTimeout(fallbackTimer)},
+          onError:()=>showFallback(index)
+        }
+      });
+    });
+  };
+  const api=document.createElement('script');
+  api.src='https://www.youtube.com/iframe_api';
+  api.onerror=()=>videos.forEach((_,index)=>showFallback(index));
+  document.head.append(api);
+})();
+</script>
 <p><a href="https://apps.apple.com/jp/app/id6822286730">iPhone / iPad版のApp Storeページを見る →</a></p>
 <hr><h2>よくある質問</h2>
 <h3>テスト中も14日間ずっと遊ぶ必要がありますか？</h3><p>毎日遊ぶ必要はありません。Google Play上でテスターとして参加した状態を最低14日間保つことが必要です。</p>
